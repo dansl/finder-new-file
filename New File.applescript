@@ -19,94 +19,37 @@
 # SOFTWARE.
 
 try
-    tell application "Finder"
-        activate
-        set targetFolder to the target of the front window as alias
-        set newFileName to my getAvailableFilename(targetFolder)
-        set newFile to make new file at targetFolder with properties {name: newFileName}
-        select newFile
-    end tell
-    
-    delay 0.4
-    
-    tell application "System Events"
-        tell process "Finder"
-            keystroke return
-        end tell
-    end tell
-    
+	tell application "Finder"
+		activate
+		set targetFolder to the target of the front window as alias
+		set newFileName to my getAvailableFilename(targetFolder)
+		set newFile to make new file at targetFolder with properties {name:newFileName}
+		select newFile
+	end tell
+	
 on error theError number errorNumber
-    tell me to activate
-    if errorNumber is 1002 then
-        displayAccessibilityPromptDialog()
-    else
-        display dialog "Error: " & (errorNumber as text) & return & return & theError Â
-            buttons {"OK"} Â
-            default button 1 Â
-            with icon stop Â
-            with title "New File Applet"
-    end if
+	tell me to activate
+	
+	display dialog "Error: " & (errorNumber as text) & return & return & theError Â
+		buttons {"OK"} Â
+		default button 1 Â
+		with icon stop Â
+		with title "New File Generation Error"
 end try
 
 on getAvailableFilename(folderAlias)
-    set found to false
-    set fileCount to 1
-    set appendix to ""
-
-    repeat while found is false
-        tell application "Finder"
-            if exists file (folderAlias as text & "untitled file" & appendix) then
-                set fileCount to (fileCount + 1)
-                set appendix to (" " & fileCount as string)
-            else
-                return "untitled file" & appendix
-            end if
-        end tell
-    end repeat
-
+	set found to false
+	set fileCount to 1
+	set appendix to ""
+	
+	repeat while found is false
+		tell application "Finder"
+			if exists file ((folderAlias as text) & "new file" & appendix) then
+				set fileCount to (fileCount + 1)
+				set appendix to (" " & fileCount as string)
+			else
+				return "new file" & appendix
+			end if
+		end tell
+	end repeat
 end getAvailableFilename
-
-on displayAccessibilityPromptDialog()
-    set systemVersion to system version of (system info)
-
-    considering numeric strings
-        set hasNewSettingsApp to systemVersion ³ "11"
-    end considering
-
-    if hasNewSettingsApp
-        set accessibilitySettingPath to "System Settings ? Privacy & Security ? Accessibility"
-    else
-        set accessibilitySettingPath to "System Preferences ? Security & Privacy ? Privacy ? Accessibility"
-    end if
-
-    set theResponse to display dialog "Please allow the New File app in:" & return & return & accessibilitySettingPath Â
-        buttons {"Open Privacy Settings", "OK"} Â
-        default button 1 Â
-        with icon caution Â
-        with title "New File Applet"
-
-    if (button returned of theResponse is "Open Privacy Settings") then
-        if hasNewSettingsApp then
-            set securityPaneId to "com.apple.settings.PrivacySecurity.extension"
-            tell application "System Settings"
-                activate
-                delay 0.5
-                set the current pane to pane id securityPaneId
-                get the name of every anchor of pane id securityPaneId
-                delay 0.5
-                reveal anchor "Privacy_Accessibility" of pane id securityPaneId
-            end tell
-        else
-            set securityPaneId to "com.apple.preference.security"
-            tell application "System Preferences"
-                activate
-                delay 0.5
-                set the current pane to pane id securityPaneId
-                get the name of every anchor of pane id securityPaneId
-                delay 0.5
-                reveal anchor "Privacy_Accessibility" of pane id securityPaneId
-            end tell
-        end if
-    end if
-
-end displayAccessibilityPromptDialog
