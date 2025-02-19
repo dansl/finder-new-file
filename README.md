@@ -8,7 +8,7 @@ This is an AppleScript based application that will create an empty file in the c
 It's icon is designed to fit seamlessly into your Finder's toolbar.
 
 ## How to Use
-Download the latest archive from [Releases](https://github.com/RomanSmolka/finder-new-file/releases/latest) and pick the right app version according to your system appearance – Light, Dark or Legacy (for macOS Catalina and older).
+Download the latest archive from [Releases](https://github.com/dansl/finder-new-file/releases/latest) and pick the right app version according to your system appearance – Light, Dark or Legacy (for macOS Catalina and older).
 
 Extract it to your Applications directory or wherever you like, then drag and drop the app to the toolbar in Finder to create a shortcut.
 
